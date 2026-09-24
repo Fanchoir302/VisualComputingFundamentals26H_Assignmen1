@@ -48,7 +48,38 @@ let mut angleY = 0.0;
 # Task 2: Helicopter Parenting
 
 ## (c) 
-M
+![Helicopter successfully drawn from the scene graph](images/Assignmen3Task2Helicopter.png)
+
+draw_scene function to achieve this:
+```rust
+unsafe fn draw_scene(node: &scene_graph::SceneNode,
+    view_projection_matrix: &glm::Mat4,
+    transformation_so_far: &glm::Mat4,
+    shader: &shader::Shader)
+{
+    // logic before drawing the node
+    
+    // check if node drawable, set uniforms, bind vao, draw vao
+    if node.index_count != -1 {
+        let loc = shader.get_uniform_location("camera_transformation_matrix");
+        gl::UniformMatrix4fv(loc, 1, gl::FALSE, view_projection_matrix.as_ptr());
+
+        gl::BindVertexArray(node.vao_id);
+
+        gl::DrawElements(
+            gl::TRIANGLES,
+            node.index_count as i32,
+            gl::UNSIGNED_INT,
+            ptr::null(),
+        );
+    }
+
+    // Recurse
+    for child in &node.children {
+        draw_scene(&**child, view_projection_matrix, transformation_so_far, &shader);
+    }
+}
+```
 
 
 # Task 5: Help! My lighting is wrong!
