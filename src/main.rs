@@ -137,10 +137,10 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
         transformation_so_far: &glm::Mat4,
         shader: &shader::Shader)
     {
-        let node_rotation_matrix = glm::rotation(node.rotation[0], &glm::vec3(1.0, 0.0, 0.0))*glm::rotation(node.rotation[1], &glm::vec3(0.0, 1.0, 0.0))*glm::rotation(node.rotation[2], &glm::vec3(0.0, 0.0, 1.0));
+        let node_rotation_matrix = glm::rotation(node.rotation.x, &glm::vec3(1.0, 0.0, 0.0))*glm::rotation(node.rotation.y, &glm::vec3(0.0, 1.0, 0.0))*glm::rotation(node.rotation.z, &glm::vec3(0.0, 0.0, 1.0));
         let node_translation_matrix = glm::translation(&node.reference_point);
-        let mut perm_transformation_so_far = transformation_so_far*node_rotation_matrix*node_translation_matrix;
-        let mut perm_view_projection_matrix = view_projection_matrix*transformation_so_far;
+        let mut perm_transformation_so_far = transformation_so_far*node_translation_matrix;
+        let mut perm_view_projection_matrix = view_projection_matrix*transformation_so_far*node_rotation_matrix;
         // logic before drawing the node
 
         // check if node drawable, set uniforms, bind vao, draw vao
