@@ -138,14 +138,14 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
         shader: &shader::Shader)
     {
         let node_rotation_matrix = glm::rotation(node.rotation[0], &glm::vec3(1.0, 0.0, 0.0))*glm::rotation(node.rotation[1], &glm::vec3(0.0, 1.0, 0.0))*glm::rotation(node.rotation[2], &glm::vec3(0.0, 0.0, 1.0));
-        let node_translation_matrix = glm::translation(&node.position);
+        let node_translation_matrix = glm::translation(&node.reference_point);
         let mut perm_transformation_so_far = transformation_so_far*node_rotation_matrix*node_translation_matrix;
-        let mut perm_view_projection_matrix = transformation_so_far*view_projection_matrix;
+        let mut perm_view_projection_matrix = view_projection_matrix*transformation_so_far;
         // logic before drawing the node
-        // view_projection_matrix = 
-        
+
         // check if node drawable, set uniforms, bind vao, draw vao
         if node.index_count != -1 {
+            node.print();
             let loc = shader.get_uniform_location("camera_transformation_matrix");
             gl::UniformMatrix4fv(loc, 1, gl::FALSE, perm_view_projection_matrix.as_ptr());
 
@@ -296,7 +296,7 @@ fn main() {
         scene_graph.add_child(&terrain_node);
 
         // Setting the initial positions and rotations of every helicopter node
-        body_node.position = glm::vec3(0.0, 0.0, 0.0);
+        body_node.position = glm::vec3(0.0, 10.0, 0.0);
         door_node.position = glm::vec3(0.0, 0.0, 0.0);
         main_rotor_node.position = glm::vec3(0.0, 0.0, 0.0);
         tail_rotor_node.position = glm::vec3(0.0, 0.0, 0.0);
@@ -304,12 +304,13 @@ fn main() {
 
         body_node.rotation = glm::vec3(0.0, 0.0, 0.0);
         door_node.rotation = glm::vec3(0.0, 0.0, 0.0);
-        main_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
+        main_rotor_node.rotation = glm::vec3(1.5, 1.5, 1.5);
         tail_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
 
         // Setting the reference points for every helicopter node
-        door_node.reference_point = glm::vec3(1.0, 0.0, 0.0);
-        main_rotor_node.reference_point = glm::vec3(0.0, 2.3, 0.0);
+        door_node.reference_point = glm::vec3(0.0, 1.5, 10.4);
+        door_node.reference_point = glm::vec3(1.0, 0.0, 10.4);
+        main_rotor_node.reference_point = glm::vec3(0.0, 2.3, 10.4);
         tail_rotor_node.reference_point = glm::vec3(0.35, 2.3, 10.4);
 
         // == // Set up your shaders here
@@ -501,6 +502,7 @@ fn main() {
                 // );
                 
                 // draw scene here
+                main_rotor_node.rotation = glm::vec3(0.0, elapsed, 0.0);
                 draw_scene(&scene_graph, &camera_transformation_matrix, &glm::identity(), &simple_shader);
                
             }
