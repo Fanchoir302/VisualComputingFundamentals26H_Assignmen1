@@ -137,12 +137,15 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
         transformation_so_far: &glm::Mat4,
         shader: &shader::Shader)
     {
+        let mut perm_transformation_so_far = transformation_so_far*node.rotation*node.position;
+        let mut perm_view_projection_matrix = transformation_so_far*view_projection_matrix;
         // logic before drawing the node
+        // view_projection_matrix = 
         
         // check if node drawable, set uniforms, bind vao, draw vao
         if node.index_count != -1 {
             let loc = shader.get_uniform_location("camera_transformation_matrix");
-            gl::UniformMatrix4fv(loc, 1, gl::FALSE, view_projection_matrix.as_ptr());
+            gl::UniformMatrix4fv(loc, 1, gl::FALSE, perm_view_projection_matrix.as_ptr());
 
             gl::BindVertexArray(node.vao_id);
 
@@ -156,7 +159,7 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
 
         // Recurse
         for child in &node.children {
-            draw_scene(&**child, view_projection_matrix, transformation_so_far, &shader);
+            draw_scene(&**child, &perm_view_projection_matrix, &perm_transformation_so_fartransformation_so_far, &shader);
         }
     }
 
@@ -304,7 +307,7 @@ fn main() {
 
         // Setting the reference points for every helicopter node
         door_node.reference_point = glm::vec3(1.0, 0.0, 0.0);
-        main_rotor_node.reference_point = glm::vec3(0.0, 0.0, 2.0);
+        main_rotor_node.reference_point = glm::vec3(0.0, 2.3, 0.0);
         tail_rotor_node.reference_point = glm::vec3(0.35, 2.3, 10.4);
 
         // == // Set up your shaders here
