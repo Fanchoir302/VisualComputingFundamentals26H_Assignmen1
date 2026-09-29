@@ -139,9 +139,10 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
     {
         let node_rotation_matrix = glm::rotation(node.rotation.x, &glm::vec3(1.0, 0.0, 0.0))*glm::rotation(node.rotation.y, &glm::vec3(0.0, 1.0, 0.0))*glm::rotation(node.rotation.z, &glm::vec3(0.0, 0.0, 1.0));
         let node_translation_matrix = glm::translation(&node.reference_point);
+        let node_minus_translation_matrix = - glm::translation(&node.reference_point);
         let node_translation_matrix_2 = glm::translation(&node.position);
         let mut perm_transformation_so_far = transformation_so_far;
-        let mut perm_view_projection_matrix = view_projection_matrix*transformation_so_far*node_translation_matrix*node_translation_matrix_2*node_rotation_matrix;
+        let mut perm_view_projection_matrix = view_projection_matrix*transformation_so_far*node_translation_matrix_2*node_minus_translation_matrix*node_rotation_matrix*node_translation_matrix;
         // logic before drawing the node
 
 
@@ -306,11 +307,11 @@ fn main() {
 
         body_node.rotation = glm::vec3(0.0, 0.0, 0.0);
         door_node.rotation = glm::vec3(0.0, 0.0, 0.0);
-        main_rotor_node.rotation = glm::vec3(1.5, 1.5, 1.5);
+        main_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
         tail_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
 
         // Setting the reference points for every helicopter node
-        door_node.reference_point = glm::vec3(0.0, 1.5, 10.4);
+        body_node.reference_point = glm::vec3(0.0, 0.0, 10.4);
         door_node.reference_point = glm::vec3(1.0, 0.0, 10.4);
         main_rotor_node.reference_point = glm::vec3(0.0, 2.3, 10.4);
         tail_rotor_node.reference_point = glm::vec3(0.35, 2.3, 10.4);
@@ -504,8 +505,8 @@ fn main() {
                 // );
                 
                 // draw scene here
-                body_node.position = glm::vec3(elapsed, 0.0, 0.0);
-                main_rotor_node.rotation = glm::vec3(0.0, elapsed, 0.0);
+                // body_node.position = glm::vec3(elapsed, 0.0, 0.0);
+                tail_rotor_node.rotation = glm::vec3(elapsed, 0.0, 0.0);
                 draw_scene(&scene_graph, &camera_transformation_matrix, &glm::identity(), &simple_shader);
                
             }
