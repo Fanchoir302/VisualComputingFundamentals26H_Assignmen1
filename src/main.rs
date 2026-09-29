@@ -137,7 +137,9 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
         transformation_so_far: &glm::Mat4,
         shader: &shader::Shader)
     {
-        let mut perm_transformation_so_far = transformation_so_far*node.rotation*node.position;
+        let node_rotation_matrix = glm::rotation(node.rotation[0], &glm::vec3(1.0, 0.0, 0.0))*glm::rotation(node.rotation[1], &glm::vec3(0.0, 1.0, 0.0))*glm::rotation(node.rotation[2], &glm::vec3(0.0, 0.0, 1.0));
+        let node_translation_matrix = glm::translation(&node.position);
+        let mut perm_transformation_so_far = transformation_so_far*node_rotation_matrix*node_translation_matrix;
         let mut perm_view_projection_matrix = transformation_so_far*view_projection_matrix;
         // logic before drawing the node
         // view_projection_matrix = 
@@ -159,7 +161,7 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
 
         // Recurse
         for child in &node.children {
-            draw_scene(&**child, &perm_view_projection_matrix, &perm_transformation_so_fartransformation_so_far, &shader);
+            draw_scene(&**child, &perm_view_projection_matrix, &perm_transformation_so_far, &shader);
         }
     }
 
