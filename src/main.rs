@@ -143,6 +143,7 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
         let mut perm_view_projection_matrix = view_projection_matrix*transformation_so_far*node_rotation_matrix;
         // logic before drawing the node
 
+
         // check if node drawable, set uniforms, bind vao, draw vao
         if node.index_count != -1 {
             node.print();
