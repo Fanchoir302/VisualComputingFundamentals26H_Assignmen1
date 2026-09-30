@@ -314,7 +314,7 @@ fn main() {
         tail_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
 
         // Setting the reference points for every helicopter node
-        body_node.reference_point = glm::vec3(0.0, 0.0, 10.4);
+        body_node.reference_point = glm::vec3(0.0, 0.0, 0.0);
         door_node.reference_point = glm::vec3(1.2, 0.0, -1.0);
         main_rotor_node.reference_point = glm::vec3(0.0, 2.0, 0.0);
         tail_rotor_node.reference_point = glm::vec3(0.35, 2.3, 10.4); // this is correct
@@ -512,6 +512,7 @@ fn main() {
                 tail_rotor_node.rotation = glm::vec3(elapsed, 0.0, 0.0);
                 main_rotor_node.rotation = glm::vec3(0.0, elapsed, 0.0);
                 door_node.rotation = glm::vec3(0.0, elapsed.sin(), 0.0);
+                body_node.rotation = glm::vec3(0.0, elapsed, 0.0);
                 draw_scene(&scene_graph, &camera_transformation_matrix, &glm::identity(), &simple_shader);
                
             }
