@@ -16,6 +16,7 @@ mod shader;
 mod util;
 mod mesh;
 mod scene_graph;
+mod toolbox;
 use scene_graph::SceneNode;
 
 use glm::{Mat3x3, Mat4x4, pi};
@@ -508,11 +509,16 @@ fn main() {
                 // );
                 
                 // draw scene here
-                // body_node.position = glm::vec3(elapsed, 0.0, 0.0);
                 tail_rotor_node.rotation = glm::vec3(elapsed, 0.0, 0.0);
                 main_rotor_node.rotation = glm::vec3(0.0, elapsed, 0.0);
-                door_node.rotation = glm::vec3(0.0, elapsed.sin(), 0.0);
-                body_node.rotation = glm::vec3(0.0, elapsed, 0.0);
+
+                let heading = toolbox::simple_heading_animation(elapsed);
+                body_node.position.x = heading.x;
+                body_node.position.z = heading.z;
+                body_node.rotation.x = heading.roll;
+                body_node.rotation.y = heading.yaw;
+                body_node.rotation.z = heading.pitch;
+
                 draw_scene(&scene_graph, &camera_transformation_matrix, &glm::identity(), &simple_shader);
                
             }
