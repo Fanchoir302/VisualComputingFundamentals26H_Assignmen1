@@ -148,13 +148,15 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
         let mut model_transform = transformation_so_far*local_transformation_matrix;
         let mut model_view_projection = view_projection_matrix*model_transform;
         // logic before drawing the node
-
+        println!("{}", model_transform);
 
         // check if node drawable, set uniforms, bind vao, draw vao
         if node.index_count != -1 {
-            node.print();
-            let loc = shader.get_uniform_location("camera_transformation_matrix");
-            gl::UniformMatrix4fv(loc, 1, gl::FALSE, model_view_projection.as_ptr());
+            let loc_transformation = shader.get_uniform_location("camera_transformation_matrix");
+            gl::UniformMatrix4fv(loc_transformation, 1, gl::FALSE, model_view_projection.as_ptr());
+
+            let loc_model = shader.get_uniform_location("model_matrix");
+            gl::UniformMatrix4fv(loc_model, 1, gl::FALSE, model_transform.as_ptr());
 
             gl::BindVertexArray(node.vao_id);
 
