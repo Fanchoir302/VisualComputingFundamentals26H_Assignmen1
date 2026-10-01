@@ -148,7 +148,7 @@ unsafe fn create_vao(vertices: &Vec<f32>, indices: &Vec<u32>, normals: &Vec<f32>
         let mut model_transform = transformation_so_far*local_transformation_matrix;
         let mut model_view_projection = view_projection_matrix*model_transform;
         // logic before drawing the node
-        println!("{}", model_transform);
+        // println!("{}", model_transform);
 
         // check if node drawable, set uniforms, bind vao, draw vao
         if node.index_count != -1 {
@@ -260,17 +260,17 @@ fn main() {
             gl::Enable(gl::DEBUG_OUTPUT_SYNCHRONOUS);
             gl::DebugMessageCallback(Some(util::debug_callback), ptr::null());
 
-            // Print some diagnostics
-            println!(
-                "{}: {}",
-                util::get_gl_string(gl::VENDOR),
-                util::get_gl_string(gl::RENDERER)
-            );
-            println!("OpenGL\t: {}", util::get_gl_string(gl::VERSION));
-            println!(
-                "GLSL\t: {}",
-                util::get_gl_string(gl::SHADING_LANGUAGE_VERSION)
-            );
+            // // Print some diagnostics
+            // println!(
+            //     "{}: {}",
+            //     util::get_gl_string(gl::VENDOR),
+            //     util::get_gl_string(gl::RENDERER)
+            // );
+            // println!("OpenGL\t: {}", util::get_gl_string(gl::VERSION));
+            // println!(
+            //     "GLSL\t: {}",
+            //     util::get_gl_string(gl::SHADING_LANGUAGE_VERSION)
+            // );
         }
 
         // == // Set up your VAO around here
