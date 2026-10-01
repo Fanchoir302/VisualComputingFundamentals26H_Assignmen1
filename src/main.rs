@@ -286,42 +286,46 @@ fn main() {
         let vao_tail_rotor = unsafe { create_vao(&helicopter_mesh.tail_rotor.vertices, &helicopter_mesh.tail_rotor.indices, &helicopter_mesh.tail_rotor.normals)};
 
         // Scene graph for Assignment 3 Task 2
-        // let mut scene_graph = scene_graph::SceneNode::from_vao(vao_terrain, terrain_mesh.indices.len() as i32);
-        let mut terrain_node = scene_graph::SceneNode::from_vao(vao_terrain, terrain_mesh.indices.len() as i32);
-        let mut body_node = scene_graph::SceneNode::from_vao(vao_body, helicopter_mesh.body.indices.len() as i32);
+        let mut helicopters = vec![];
 
-        let mut door_node = scene_graph::SceneNode::from_vao(vao_door, helicopter_mesh.door.indices.len() as i32);
+        for i in 0..5 {
+            let mut terrain_node = scene_graph::SceneNode::from_vao(vao_terrain, terrain_mesh.indices.len() as i32);
+            let mut body_node = scene_graph::SceneNode::from_vao(vao_body, helicopter_mesh.body.indices.len() as i32);
 
-        let mut main_rotor_node = scene_graph::SceneNode::from_vao(vao_main_rotor, helicopter_mesh.main_rotor.indices.len() as i32);
+            let mut door_node = scene_graph::SceneNode::from_vao(vao_door, helicopter_mesh.door.indices.len() as i32);
 
-        let mut tail_rotor_node = scene_graph::SceneNode::from_vao(vao_tail_rotor, helicopter_mesh.tail_rotor.indices.len() as i32);
-        // scene_graph.add_child(&helicopter_node);
-        let mut scene_graph = scene_graph::SceneNode::new();
+            let mut main_rotor_node = scene_graph::SceneNode::from_vao(vao_main_rotor, helicopter_mesh.main_rotor.indices.len() as i32);
 
-        body_node.add_child(&door_node);
-        body_node.add_child(&main_rotor_node);
-        body_node.add_child(&tail_rotor_node);
-        terrain_node.add_child(&body_node);
-        scene_graph.add_child(&terrain_node);
+            let mut tail_rotor_node = scene_graph::SceneNode::from_vao(vao_tail_rotor, helicopter_mesh.tail_rotor.indices.len() as i32);
 
-        // Setting the initial positions and rotations of every helicopter node
-        body_node.position = glm::vec3(0.0, 0.0, 0.0);
-        door_node.position = glm::vec3(0.0, 0.0, 0.0);
-        main_rotor_node.position = glm::vec3(0.0, 0.0, 0.0);
-        tail_rotor_node.position = glm::vec3(0.0, 0.0, 0.0);
+            let mut scene_graph = scene_graph::SceneNode::new();
+
+            body_node.add_child(&door_node);
+            body_node.add_child(&main_rotor_node);
+            body_node.add_child(&tail_rotor_node);
+            terrain_node.add_child(&body_node);
+            scene_graph.add_child(&terrain_node);
+
+            // Setting the initial positions and rotations of every helicopter node
+            body_node.position = glm::vec3(0.0, 0.0, 0.0);
+            door_node.position = glm::vec3(0.0, 0.0, 0.0);
+            main_rotor_node.position = glm::vec3(0.0, 0.0, 0.0);
+            tail_rotor_node.position = glm::vec3(0.0, 0.0, 0.0);
 
 
-        body_node.rotation = glm::vec3(0.0, 0.0, 0.0);
-        door_node.rotation = glm::vec3(0.0, 0.0, 0.0);
-        main_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
-        tail_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
+            body_node.rotation = glm::vec3(0.0, 0.0, 0.0);
+            door_node.rotation = glm::vec3(0.0, 0.0, 0.0);
+            main_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
+            tail_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
 
-        // Setting the reference points for every helicopter node
-        body_node.reference_point = glm::vec3(0.0, 0.0, 0.0);
-        door_node.reference_point = glm::vec3(1.2, 0.0, -1.0);
-        main_rotor_node.reference_point = glm::vec3(0.0, 2.0, 0.0);
-        tail_rotor_node.reference_point = glm::vec3(0.35, 2.3, 10.4); // this is correct
+            // Setting the reference points for every helicopter node
+            body_node.reference_point = glm::vec3(0.0, 0.0, 0.0);
+            door_node.reference_point = glm::vec3(1.2, 0.0, -1.0);
+            main_rotor_node.reference_point = glm::vec3(0.0, 2.0, 0.0);
+            tail_rotor_node.reference_point = glm::vec3(0.35, 2.3, 10.4); // this is correct
 
+            helicopters.push(scene_graph);
+        }
         // == // Set up your shaders here
 
         // Basic usage of shader helper:
@@ -511,18 +515,24 @@ fn main() {
                 // );
                 
                 // draw scene here
-                tail_rotor_node.rotation = glm::vec3(10.0*elapsed, 0.0, 0.0);
-                main_rotor_node.rotation = glm::vec3(0.0, 10.0*elapsed, 0.0);
+                for i in 0..5 {
+                    //let body_node = helicopters[i].get_child(0);
+                    //let door_node = body_node.get_child(0);
+                    //let main_rotor_node = body_node.get_child(1);
+                    //let tail_rotor_node = body_node.get_child(2);
 
-                let heading = toolbox::simple_heading_animation(elapsed);
-                body_node.position.x = heading.x;
-                body_node.position.z = heading.z;
-                body_node.rotation.x = heading.roll;
-                body_node.rotation.y = heading.yaw;
-                body_node.rotation.z = heading.pitch;
+                    helicopters[i].get_child(0).get_child(0).get_child(1).rotation = glm::vec3(0.0, 10.0*elapsed, 0.0);
+                    helicopters[i].get_child(0).get_child(0).get_child(2).rotation = glm::vec3(10.0*elapsed, 0.0, 0.0);
 
-                draw_scene(&scene_graph, &camera_transformation_matrix, &glm::identity(), &simple_shader);
-               
+                    let heading = toolbox::simple_heading_animation(elapsed + ((i*10) as f32));
+                    helicopters[i].get_child(0).get_child(0).position.x = heading.x;
+                    helicopters[i].get_child(0).get_child(0).position.z = heading.z;
+                    helicopters[i].get_child(0).get_child(0).rotation.x = heading.roll;
+                    helicopters[i].get_child(0).get_child(0).rotation.y = heading.yaw;
+                    helicopters[i].get_child(0).get_child(0).rotation.z = heading.pitch;
+
+                    draw_scene(&helicopters[i], &camera_transformation_matrix, &glm::identity(), &simple_shader);
+                }
             }
 
             // Display the new color buffer on the display
