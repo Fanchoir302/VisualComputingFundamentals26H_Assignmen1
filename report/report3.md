@@ -150,4 +150,64 @@ This results in:
 # Task 6: Time to turn this thing up to ~~11~~ 5
 
 ## (a) 
-M
+
+![6 beautiful helicopters](images/Assignment3Task66Helicopters.png)
+
+Loop to create the helicopters at the beginning of main:
+``` rust
+for i in 0..5 {
+    let mut terrain_node = scene_graph::SceneNode::from_vao(vao_terrain, terrain_mesh.indices.len() as i32);
+    let mut body_node = scene_graph::SceneNode::from_vao(vao_body, helicopter_mesh.body.indices.len() as i32);
+
+    let mut door_node = scene_graph::SceneNode::from_vao(vao_door, helicopter_mesh.door.indices.len() as i32);
+
+    let mut main_rotor_node = scene_graph::SceneNode::from_vao(vao_main_rotor, helicopter_mesh.main_rotor.indices.len() as i32);
+
+    let mut tail_rotor_node = scene_graph::SceneNode::from_vao(vao_tail_rotor, helicopter_mesh.tail_rotor.indices.len() as i32);
+
+    let mut scene_graph = scene_graph::SceneNode::new();
+
+    body_node.add_child(&door_node);
+    body_node.add_child(&main_rotor_node);
+    body_node.add_child(&tail_rotor_node);
+    terrain_node.add_child(&body_node);
+    scene_graph.add_child(&terrain_node);
+
+    // Setting the initial positions and rotations of every helicopter node
+    body_node.position = glm::vec3(0.0, 0.0, 0.0);
+    door_node.position = glm::vec3(0.0, 0.0, 0.0);
+    main_rotor_node.position = glm::vec3(0.0, 0.0, 0.0);
+    tail_rotor_node.position = glm::vec3(0.0, 0.0, 0.0);
+
+
+    body_node.rotation = glm::vec3(0.0, 0.0, 0.0);
+    door_node.rotation = glm::vec3(0.0, 0.0, 0.0);
+    main_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
+    tail_rotor_node.rotation = glm::vec3(0.0, 0.0, 0.0);
+
+    // Setting the reference points for every helicopter node
+    body_node.reference_point = glm::vec3(0.0, 0.0, 0.0);
+    door_node.reference_point = glm::vec3(1.2, 0.0, -1.0);
+    main_rotor_node.reference_point = glm::vec3(0.0, 2.0, 0.0);
+    tail_rotor_node.reference_point = glm::vec3(0.35, 2.3, 10.4); // this is correct
+
+    helicopters.push(scene_graph);
+}
+```
+
+Loop to draw the helicopters:
+``` rust
+for i in 0..5 {
+    helicopters[i].get_child(0).get_child(0).get_child(1).rotation = glm::vec3(0.0, 10.0*elapsed, 0.0);
+    helicopters[i].get_child(0).get_child(0).get_child(2).rotation = glm::vec3(10.0*elapsed, 0.0, 0.0);
+
+    let heading = toolbox::simple_heading_animation(elapsed + ((i*10) as f32));
+    helicopters[i].get_child(0).get_child(0).position.x = heading.x;
+    helicopters[i].get_child(0).get_child(0).position.z = heading.z;
+    helicopters[i].get_child(0).get_child(0).rotation.x = heading.roll;
+    helicopters[i].get_child(0).get_child(0).rotation.y = heading.yaw;
+    helicopters[i].get_child(0).get_child(0).rotation.z = heading.pitch;
+
+    draw_scene(&helicopters[i], &camera_transformation_matrix, &glm::identity(), &simple_shader);
+}
+```
