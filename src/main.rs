@@ -288,7 +288,7 @@ fn main() {
         // Scene graph for Assignment 3 Task 2
         let mut helicopters = vec![];
 
-        for i in 0..5 {
+        for i in 0..4 {
             let mut terrain_node = scene_graph::SceneNode::from_vao(vao_terrain, terrain_mesh.indices.len() as i32);
             let mut body_node = scene_graph::SceneNode::from_vao(vao_body, helicopter_mesh.body.indices.len() as i32);
 
@@ -515,7 +515,7 @@ fn main() {
                 // );
                 
                 // draw scene here
-                for i in 0..5 {
+                for i in 0..4 {
                     helicopters[i].get_child(0).get_child(0).get_child(1).rotation = glm::vec3(0.0, 10.0*elapsed, 0.0);
                     helicopters[i].get_child(0).get_child(0).get_child(2).rotation = glm::vec3(10.0*elapsed, 0.0, 0.0);
 
