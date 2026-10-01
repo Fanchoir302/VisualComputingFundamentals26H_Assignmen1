@@ -511,8 +511,8 @@ fn main() {
                 // );
                 
                 // draw scene here
-                tail_rotor_node.rotation = glm::vec3(elapsed, 0.0, 0.0);
-                main_rotor_node.rotation = glm::vec3(0.0, elapsed, 0.0);
+                tail_rotor_node.rotation = glm::vec3(10.0*elapsed, 0.0, 0.0);
+                main_rotor_node.rotation = glm::vec3(0.0, 10.0*elapsed, 0.0);
 
                 let heading = toolbox::simple_heading_animation(elapsed);
                 body_node.position.x = heading.x;
