@@ -100,21 +100,21 @@ Rotating the normals has been achieved by passing the model matrix as a uniform 
 let mut model_transform = transformation_so_far*local_transformation_matrix;
 
 if node.index_count != -1 {
-        let loc_transformation = shader.get_uniform_location("camera_transformation_matrix");
-        gl::UniformMatrix4fv(loc_transformation, 1, gl::FALSE, model_view_projection.as_ptr());
+    let loc_transformation = shader.get_uniform_location("camera_transformation_matrix");
+    gl::UniformMatrix4fv(loc_transformation, 1, gl::FALSE, model_view_projection.as_ptr());
 
-        let loc_model = shader.get_uniform_location("model_matrix");
-        gl::UniformMatrix4fv(loc_model, 1, gl::FALSE, model_transform.as_ptr());
+    let loc_model = shader.get_uniform_location("model_matrix");
+    gl::UniformMatrix4fv(loc_model, 1, gl::FALSE, model_transform.as_ptr());
 
-        gl::BindVertexArray(node.vao_id);
+    gl::BindVertexArray(node.vao_id);
 
-        gl::DrawElements(
-            gl::TRIANGLES,
-            node.index_count as i32,
-            gl::UNSIGNED_INT,
-            ptr::null(),
-        );
-    }
+    gl::DrawElements(
+        gl::TRIANGLES,
+        node.index_count as i32,
+        gl::UNSIGNED_INT,
+        ptr::null(),
+    );
+}
 ```
 And modifying the vertex shader as shown below:
 ``` rust
@@ -139,9 +139,11 @@ void main()
 }
 ```
 This results in:
+
 ![
     Left side of the helicopter
 ](images/Assignment3Task3cSide1.png)
+
 ![
     Right side of the helicopter
 ](images/Assignment3Task3cSide2.png)
@@ -155,14 +157,19 @@ This results in:
 Loop to create the helicopters at the beginning of main:
 ``` rust
 for i in 0..5 {
-    let mut terrain_node = scene_graph::SceneNode::from_vao(vao_terrain, terrain_mesh.indices.len() as i32);
-    let mut body_node = scene_graph::SceneNode::from_vao(vao_body, helicopter_mesh.body.indices.len() as i32);
+    let mut terrain_node = scene_graph::SceneNode::from_vao(vao_terrain, 
+    terrain_mesh.indices.len() as i32);
+    let mut body_node = scene_graph::SceneNode::from_vao(vao_body, 
+    helicopter_mesh.body.indices.len() as i32);
 
-    let mut door_node = scene_graph::SceneNode::from_vao(vao_door, helicopter_mesh.door.indices.len() as i32);
+    let mut door_node = scene_graph::SceneNode::from_vao(vao_door, 
+    helicopter_mesh.door.indices.len() as i32);
 
-    let mut main_rotor_node = scene_graph::SceneNode::from_vao(vao_main_rotor, helicopter_mesh.main_rotor.indices.len() as i32);
+    let mut main_rotor_node = scene_graph::SceneNode::from_vao(vao_main_rotor, 
+    helicopter_mesh.main_rotor.indices.len() as i32);
 
-    let mut tail_rotor_node = scene_graph::SceneNode::from_vao(vao_tail_rotor, helicopter_mesh.tail_rotor.indices.len() as i32);
+    let mut tail_rotor_node = scene_graph::SceneNode::from_vao(vao_tail_rotor, 
+    helicopter_mesh.tail_rotor.indices.len() as i32);
 
     let mut scene_graph = scene_graph::SceneNode::new();
 
@@ -197,8 +204,10 @@ for i in 0..5 {
 Loop to draw the helicopters:
 ``` rust
 for i in 0..5 {
-    helicopters[i].get_child(0).get_child(0).get_child(1).rotation = glm::vec3(0.0, 10.0*elapsed, 0.0);
-    helicopters[i].get_child(0).get_child(0).get_child(2).rotation = glm::vec3(10.0*elapsed, 0.0, 0.0);
+    helicopters[i].get_child(0).get_child(0).get_child(1).rotation = 
+    glm::vec3(0.0, 10.0*elapsed, 0.0);
+    helicopters[i].get_child(0).get_child(0).get_child(2).rotation = 
+    glm::vec3(10.0*elapsed, 0.0, 0.0);
 
     let heading = toolbox::simple_heading_animation(elapsed + ((i*10) as f32));
     helicopters[i].get_child(0).get_child(0).position.x = heading.x;
@@ -207,7 +216,8 @@ for i in 0..5 {
     helicopters[i].get_child(0).get_child(0).rotation.y = heading.yaw;
     helicopters[i].get_child(0).get_child(0).rotation.z = heading.pitch;
 
-    draw_scene(&helicopters[i], &camera_transformation_matrix, &glm::identity(), &simple_shader);
+    draw_scene(&helicopters[i], &camera_transformation_matrix, &glm::identity(), 
+    &simple_shader);
 }
 ```
 
