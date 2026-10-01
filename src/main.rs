@@ -516,11 +516,6 @@ fn main() {
                 
                 // draw scene here
                 for i in 0..5 {
-                    //let body_node = helicopters[i].get_child(0);
-                    //let door_node = body_node.get_child(0);
-                    //let main_rotor_node = body_node.get_child(1);
-                    //let tail_rotor_node = body_node.get_child(2);
-
                     helicopters[i].get_child(0).get_child(0).get_child(1).rotation = glm::vec3(0.0, 10.0*elapsed, 0.0);
                     helicopters[i].get_child(0).get_child(0).get_child(2).rotation = glm::vec3(10.0*elapsed, 0.0, 0.0);
 
