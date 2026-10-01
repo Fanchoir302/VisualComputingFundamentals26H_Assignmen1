@@ -151,3 +151,9 @@ This results in:
 
 ## (a) 
 M
+
+# Optional Task: Finding Easter Egg
+![
+    Found Easter Egg
+
+](images/Assignment3EasterEgg.png)
