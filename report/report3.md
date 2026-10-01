@@ -85,10 +85,66 @@ unsafe fn draw_scene(node: &scene_graph::SceneNode,
 # Task 5: Help! My lighting is wrong!
 
 ## (a) 
-M
+![
+    Darker side of the helicopter
+](images/Assignment3Task3aDarkSide.png)
+![
+    Lighter side of the helicopter
+](images/Assignment3Task3aLightSide.png)
+
+As expected, the lighting doesn't change as the helicopter is moving.
 
 ## (c) 
-M
+Rotating the normals has been achieved by passing the model matrix as a uniform variable to the vertex shader:
+```rust
+let mut model_transform = transformation_so_far*local_transformation_matrix;
+
+if node.index_count != -1 {
+        let loc_transformation = shader.get_uniform_location("camera_transformation_matrix");
+        gl::UniformMatrix4fv(loc_transformation, 1, gl::FALSE, model_view_projection.as_ptr());
+
+        let loc_model = shader.get_uniform_location("model_matrix");
+        gl::UniformMatrix4fv(loc_model, 1, gl::FALSE, model_transform.as_ptr());
+
+        gl::BindVertexArray(node.vao_id);
+
+        gl::DrawElements(
+            gl::TRIANGLES,
+            node.index_count as i32,
+            gl::UNSIGNED_INT,
+            ptr::null(),
+        );
+    }
+```
+And modifying the vertex shader as shown below:
+``` rust
+#version 430 core
+
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 normals;
+
+uniform mat4x4 camera_transformation_matrix;
+uniform mat4x4 model_matrix;
+
+out VS_OUTPUT {
+   vec3 color;
+} OUT;
+
+void main()
+{
+    vec4 temPos = vec4(position, 1.0f);
+    vec4 newPosition = camera_transformation_matrix*temPos;
+    gl_Position = newPosition;
+    OUT.color = normalize(mat3(model_matrix)*normals);
+}
+```
+This results in:
+![
+    Left side of the helicopter
+](images/Assignment3Task3cSide1.png)
+![
+    Right side of the helicopter
+](images/Assignment3Task3cSide2.png)
 
 
 # Task 6: Time to turn this thing up to ~~11~~ 5
